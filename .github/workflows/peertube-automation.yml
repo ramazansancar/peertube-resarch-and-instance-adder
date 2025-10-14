@@ -37,13 +37,8 @@ jobs:
         with:
           node-version: '20'
       
-      - name: Install pnpm
-        uses: pnpm/action-setup@v3
-        with:
-          version: 8
-      
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: npm install
       
       - name: Run PeerTube Researcher (without Redis)
         run: node peertube-researcher.js
@@ -86,15 +81,10 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-      
-      - name: Install pnpm
-        uses: pnpm/action-setup@v3
-        with:
-          version: 8
-      
+
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-      
+        run: npm install
+
       - name: Run PeerTube Instance Add
         run: node peertube-instance-add.js
         env:
