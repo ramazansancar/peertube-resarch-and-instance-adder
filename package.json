@@ -1,0 +1,20 @@
+{
+  "name": "peertube",
+  "version": "1.0.0",
+  "main": "peertube-instance-add.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "axios": "^1.12.2",
+    "axios-retry": "^4.5.0",
+    "crypto": "^1.0.1",
+    "fs": "0.0.1-security",
+    "path": "^0.12.7",
+    "redis": "^5.8.2"
+  }
+}

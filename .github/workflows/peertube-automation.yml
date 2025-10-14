@@ -1,0 +1,110 @@
+name: PeerTube Automation
+
+on:
+  schedule:
+    # Her gün gece 04:00'da researcher çalışır (UTC)
+    - cron: '0 4 * * *'
+    # Her gün gece 06:00'da instance add çalışır (UTC)
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+    inputs:
+      job:
+        description: 'Çalıştırılacak job (researcher veya instance-add)'
+        required: true
+        type: choice
+        options:
+          - researcher
+          - instance-add
+          - both
+
+jobs:
+  researcher:
+    name: PeerTube Researcher
+    runs-on: ubuntu-latest
+    # Sadece 04:00 cron'u veya manuel researcher/both seçildiğinde çalışır
+    if: |
+      github.event.schedule == '0 4 * * *' || 
+      github.event_name == 'workflow_dispatch' && (github.event.inputs.job == 'researcher' || github.event.inputs.job == 'both')
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
+      
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      
+      - name: Run PeerTube Researcher (without Redis)
+        run: node peertube-researcher.js
+        env:
+          NODE_ENV: production
+      
+      - name: Commit and push new instances
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add new-instances.txt
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+          else
+            git commit -m "chore: update new-instances.txt [automated]"
+            git push
+          fi
+
+  instance-add:
+    name: PeerTube Instance Add
+    runs-on: ubuntu-latest
+    # Researcher job'ın tamamlanmasını bekle (eğer aynı anda çalışıyorlarsa)
+    needs: [researcher]
+    # Sadece 06:00 cron'u veya manuel instance-add/both seçildiğinde çalışır
+    # needs başarısız olsa bile çalışmaya devam et
+    if: |
+      always() && (
+        github.event.schedule == '0 6 * * *' || 
+        github.event_name == 'workflow_dispatch' && (github.event.inputs.job == 'instance-add' || github.event.inputs.job == 'both')
+      )
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          # En son değişiklikleri çek (researcher commit'ini dahil et)
+          ref: ${{ github.ref }}
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 8
+      
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      
+      - name: Run PeerTube Instance Add
+        run: node peertube-instance-add.js
+        env:
+          NODE_ENV: production
+      
+      - name: Upload results as artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: peertube-results-${{ github.run_number }}
+          path: peertube-results-*.txt
+          retention-days: 30
+          if-no-files-found: ignore
