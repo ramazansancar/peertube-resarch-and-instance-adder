@@ -26,7 +26,7 @@ const nowTime = (i = 1) => {
 const config = {
   redis: {
     enabled: process.argv.includes('--use-redis'), // Redis kullanımı için --use-redis argümanı gerekli
-    host: '192.168.1.200',
+    host: '127.0.0.1',
     port: 6379,
     database: 1, // 0-15 arası Redis database number (redis node cluster | default: 0)
     expireDuration: 3 * (60 * 60) + 30, // Redis key expiry time in seconds (3 hours + 30 seconds)
