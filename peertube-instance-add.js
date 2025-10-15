@@ -4,7 +4,7 @@ const fs = require('fs').promises;
 const path = require('path');
 
 const config = {
-  concurrent: 90, // Concurrent requests
+  concurrent: 100, // Concurrent requests
   baseURL: 'https://instances.joinpeertube.org/api/v1/instances',
   headers: {
     'accept': '*/*',

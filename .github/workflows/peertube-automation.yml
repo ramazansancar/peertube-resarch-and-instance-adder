@@ -2,14 +2,14 @@ name: PeerTube Automation
 
 on:
   schedule:
-    # Her gün gece 04:00'da researcher çalışır (UTC)
-    - cron: '0 4 * * *'
-    # Her gün gece 06:00'da instance add çalışır (UTC)
-    - cron: '0 6 * * *'
+    # Runs researcher every Monday at 04:00 (UTC+3) = 01:00 UTC
+    - cron: "0 1 * * 1"
+    # Runs instance add every Monday at 06:00 (UTC+3) = 03:00 UTC
+    - cron: "0 3 * * 1"
   workflow_dispatch:
     inputs:
       job:
-        description: 'Çalıştırılacak job (researcher veya instance-add)'
+        description: "Job to run (researcher or instance-add)"
         required: true
         type: choice
         options:
@@ -21,30 +21,30 @@ jobs:
   researcher:
     name: PeerTube Researcher
     runs-on: ubuntu-latest
-    # Sadece 04:00 cron'u veya manuel researcher/both seçildiğinde çalışır
+    # Only runs on Monday 01:00 cron or manual researcher/both selection
     if: |
-      github.event.schedule == '0 4 * * *' || 
+      github.event.schedule == '0 1 * * 1' || 
       github.event_name == 'workflow_dispatch' && (github.event.inputs.job == 'researcher' || github.event.inputs.job == 'both')
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-      
+          node-version: "20"
+
       - name: Install dependencies
         run: npm install
-      
+
       - name: Run PeerTube Researcher (without Redis)
         run: node peertube-researcher.js
         env:
           NODE_ENV: production
-      
+
       - name: Commit and push new instances
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
@@ -60,27 +60,27 @@ jobs:
   instance-add:
     name: PeerTube Instance Add
     runs-on: ubuntu-latest
-    # Researcher job'ın tamamlanmasını bekle (eğer aynı anda çalışıyorlarsa)
+    # Wait for researcher job completion (if running simultaneously)
     needs: [researcher]
-    # Sadece 06:00 cron'u veya manuel instance-add/both seçildiğinde çalışır
-    # needs başarısız olsa bile çalışmaya devam et
+    # Only runs on Monday 03:00 cron or manual instance-add/both selection
+    # Continue even if needs fails
     if: |
       always() && (
-        github.event.schedule == '0 6 * * *' || 
+        github.event.schedule == '0 3 * * 1' || 
         github.event_name == 'workflow_dispatch' && (github.event.inputs.job == 'instance-add' || github.event.inputs.job == 'both')
       )
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          # En son değişiklikleri çek (researcher commit'ini dahil et)
+          # Pull latest changes (include researcher commits)
           ref: ${{ github.ref }}
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          node-version: "20"
 
       - name: Install dependencies
         run: npm install
@@ -89,7 +89,7 @@ jobs:
         run: node peertube-instance-add.js
         env:
           NODE_ENV: production
-      
+
       - name: Upload results as artifact
         if: always()
         uses: actions/upload-artifact@v4

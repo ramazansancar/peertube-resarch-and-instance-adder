@@ -26,13 +26,13 @@ const nowTime = (i = 1) => {
 const config = {
   redis: {
     enabled: process.argv.includes('--use-redis'), // Redis kullanımı için --use-redis argümanı gerekli
-    host: '127.0.0.1',
+    host: '192.168.1.200',
     port: 6379,
     database: 1, // 0-15 arası Redis database number (redis node cluster | default: 0)
     expireDuration: 3 * (60 * 60) + 30, // Redis key expiry time in seconds (3 hours + 30 seconds)
     maxCacheKeysPerEndpoint: 5, // Her endpoint için tutulacak maksimum cache key sayısı
   },
-  concurrent: 60, // Eşzamanlı istek limiti
+  concurrent: 100, // Eşzamanlı istek limiti
   timeout: 30000,
   pagination: {
     count: 100, // Max 100
@@ -62,7 +62,7 @@ const axiosInstance = axios.create({
   },
   redirect: 'follow',
   maxRedirects: config.axios.maxRedirects,
-  // SSL hatalarını bypass et
+  // SSL errors bypass
   httpsAgent: new https.Agent({
     rejectUnauthorized: false,
     secureProtocol: 'TLSv1_2_method',
