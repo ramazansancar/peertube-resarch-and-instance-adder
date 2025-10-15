@@ -159,7 +159,7 @@ async function processInBatches(items, batchSize, processor) {
 }
 
 // Write results to file
-function writeResultsToFile(results) {
+async function writeResultsToFile(results) {
   const successful = results.filter(r => r.success);
   const failed = results.filter(r => !r.success);
 
@@ -202,7 +202,7 @@ function writeResultsToFile(results) {
   const fileName = `peertube-results-${Date.now()}.txt`;
   const filePath = path.join(__dirname, fileName);
 
-  fs.writeFileSync(filePath, report.join('\n'), 'utf8');
+  await fs.writeFile(filePath, report.join('\n'), 'utf8');
   console.log(`\nRapor dosyası oluşturuldu: ${fileName}`);
   report.forEach(line => console.log(line));
 
@@ -243,7 +243,7 @@ async function main() {
     console.log(`\nProcess completed! Duration: ${duration.toFixed(2)} seconds`);
 
     // Write results to file
-    writeResultsToFile(results);
+    await writeResultsToFile(results);
 
     // Summary information
     const successful = results.filter(r => r.success).length;
