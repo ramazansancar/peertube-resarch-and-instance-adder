@@ -4634,3 +4634,5 @@
 "videos.solomon.tech",
 "misskey.io",
 "lv.s-zensky.com",
+"peertube.gyptazy.com",
+"tube.andmc.ca",
