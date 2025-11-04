@@ -4663,3 +4663,6 @@
 "www.vnchich.lat",
 "video.it-service-commander.de",
 "pptube.duckdns.org",
+"peertube.paahtimo.games",
+"video.fantastischepause.de",
+"videos.opensource-experts.com",
