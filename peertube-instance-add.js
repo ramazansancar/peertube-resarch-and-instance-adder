@@ -128,7 +128,7 @@ async function addInstance(host) {
       code: error.code,
       retryCount: error.config?.['axios-retry']?.retryCount || 0
     };
-    if (errorInfo.retryCount > 0) {
+    if (errorInfo.retryCount >= 2) {
       console.log(`✗ Failed to add: ${host} (${errorInfo.status}) - Retries: ${errorInfo.retryCount}`);
     }
     return errorInfo;

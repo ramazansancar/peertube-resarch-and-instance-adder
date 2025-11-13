@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "main": "peertube-instance-add.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "both": "node peertube-researcher.js && node peertube-instance-add.js",
+    "research": "node peertube-researcher.js",
+    "researcher": "node peertube-researcher.js",
+    "add-instances": "node peertube-instance-add.js"
   },
   "keywords": [],
   "author": "",
