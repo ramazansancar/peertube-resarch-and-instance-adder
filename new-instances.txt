@@ -5385,3 +5385,7 @@
 "1071.apps174.danian.cloud",
 "tube.limette.biz",
 "pixelfed.com",
+"video.octofriends.garden",
+"media.facb69.tec.br",
+"video.goetze.cloud",
+"video.strona-czynna.pl",
