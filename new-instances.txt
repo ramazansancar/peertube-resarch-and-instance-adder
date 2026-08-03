@@ -5413,3 +5413,8 @@
 "vnchich.fans",
 "encryptr.net",
 "videos.lasuite.coop",
+"pigav.com",
+"video.degenfeed.xyz",
+"tube-eval.kotocoop.org",
+"tube.woe2you.co.uk:9000",
+"nanao.cybtex.fr",
