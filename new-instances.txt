@@ -5503,3 +5503,8 @@
 "media.desoter.it",
 "tube.bishoptech.dedyn.io",
 "peertube3501.pocketnet.app",
+"freetube.guomengyao.site",
+"test.peertube.host",
+"watch.traubeminze.xyz",
+"toad.social",
+"peertube.shir.one",
