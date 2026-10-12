@@ -5516,3 +5516,8 @@
 "peertube.velessoft.org",
 "fedi.lat",
 "video.sudden.ninja:444",
+"arkcast.mycreationhaven.com",
+"zeroes.ca",
+"tube.libre.gal",
+"tube.retronerd.at",
+"video.laurahargreaves.com",
