@@ -5562,3 +5562,8 @@
 "video.mysticalvoid.site",
 "video.tierslieux.re",
 "fedisky.it",
+"peertube.kinob.be",
+"dtube.net",
+"elltube.gr",
+"ourtube.africa",
+"tube.freedom-node-42.eu",
